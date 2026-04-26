@@ -29,3 +29,9 @@ The interface mode shows each entrant as a virtual character, with profile detai
 - Clue-based inspection each round
 - Score + strike tracking
 - Multi-day shift and final outcome report
+
+
+### Tests
+```bash
+python3 -m unittest -v
+```
