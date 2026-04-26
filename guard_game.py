@@ -3,7 +3,9 @@
 
 from __future__ import annotations
 
+import argparse
 import random
+import sys
 from dataclasses import dataclass
 
 NAMES = ["Mara", "Ilya", "Noor", "Jax", "Pavel", "Sera", "Bram", "Kade", "Lina", "Oren"]
@@ -116,10 +118,11 @@ class Game:
             return "Adequate performance. You keep your post."
         return "Barely survived the shift. Retraining required."
 
-    def run_cli(self) -> None:
+    def run_cli(self, pause_on_exit: bool = False) -> None:
         print("\n=== Last Light Gatekeeper ===")
         print("Apocalypse checkpoint duty: ALLOW (a) or DENY (d).\n")
 
+        aborted = False
         while self.has_more_cases():
             if self.entrant_number == 0:
                 print(f"\n--- Day {self.day} ---")
@@ -130,7 +133,13 @@ class Game:
             for clue in self.get_clues(entrant):
                 print(f"- {clue}")
 
-            decision = input("Decision [a/d]: ")
+            try:
+                decision = input("Decision [a/d]: ")
+            except EOFError:
+                aborted = True
+                print("\nNo interactive input detected. Run with '--mode gui' for windowed play.")
+                break
+
             ok, msg = self.judge(entrant, decision)
             print(("PASS" if ok else "FAIL") + f": {msg}")
 
@@ -144,6 +153,26 @@ class Game:
         print(f"Reviewed: {self.processed_cases()}/{self.total_cases()}")
         print(f"Outcome: {self.outcome_text()}")
 
+        if pause_on_exit and not aborted:
+            input("\nPress Enter to close...")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Last Light Gatekeeper")
+    parser.add_argument("--mode", choices=["cli", "gui"], default="gui", help="Run in cli or gui mode")
+    args = parser.parse_args()
+
+    if args.mode == "gui":
+        try:
+            from guard_game_gui import main as gui_main
+
+            gui_main()
+            return
+        except Exception as exc:
+            print(f"GUI failed to open ({exc}). Falling back to CLI mode.\n")
+
+    Game().run_cli(pause_on_exit=not sys.stdin.isatty())
+
 
 if __name__ == "__main__":
-    Game().run_cli()
+    main()

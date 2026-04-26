@@ -7,18 +7,22 @@ You are the checkpoint guard. For each entrant, inspect clues and decide:
 - **ALLOW** entry if they appear legitimate and safe.
 - **DENY** if they seem bitten or are using a fake identity.
 
-## Modes
-### 1) Terminal mode
+## Run
+### Recommended (opens interface mode)
 ```bash
 python3 guard_game.py
 ```
 
-### 2) Interface mode (virtual people)
+### Explicit modes
 ```bash
-python3 guard_game_gui.py
+python3 guard_game.py --mode gui
+python3 guard_game.py --mode cli
 ```
 
-The interface mode shows each entrant as a virtual character, with profile details and clues, then lets you click **ALLOW** or **DENY**.
+## If the game window/terminal closes immediately
+- Use `python3 guard_game.py` to start in GUI mode by default.
+- If GUI cannot start, the program falls back to CLI and prints the reason.
+- If you launch from a file explorer, use a terminal so you can see error messages.
 
 ### Current mechanics
 - Randomized entrants with hidden states:
@@ -29,7 +33,6 @@ The interface mode shows each entrant as a virtual character, with profile detai
 - Clue-based inspection each round
 - Score + strike tracking
 - Multi-day shift and final outcome report
-
 
 ### Tests
 ```bash
